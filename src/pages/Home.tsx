@@ -1,9 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-
 import { Categories, Sort, SushiBlock, Skeleton, Pagination } from '../components';
-
 
 import { useAppDispatch } from '../redux/store';
 import { selectFilter } from '../redux/filter/selectors';
@@ -11,10 +9,8 @@ import { selectsushiData } from '../redux/sushi/selectors';
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/filter/slice';
 import { fetchsushis } from '../redux/sushi/asyncActions';
 
-
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-  
 
   const { items, status } = useSelector(selectsushiData);
   const { categoryId, sort, currentPage, searchValue } = useSelector(selectFilter);
@@ -33,36 +29,25 @@ const Home: React.FC = () => {
     const category = categoryId > 0 ? String(categoryId) : '';
     const search = searchValue;
 
-    dispatch(
-      fetchsushis({
-        sortBy,
-        order,
-        category,
-        search,
-        currentPage: String(currentPage),
-      }),
-    );
+    dispatch(fetchsushis({ sortBy, order, category, search, currentPage: String(currentPage) }));
 
     window.scrollTo(0, 0);
   };
 
-  
-  React.useEffect(() => {  
-
+  React.useEffect(() => {
     getsushis();
-    
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
-  
   const sushis = items.map((obj: any) => <SushiBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
 
   return (
     <div className="container">
-      <div className="content__top">
+      <div className="content__top">                    
         <Categories value={categoryId} onChangeCategory={onChangeCategory} />
         <Sort value={sort} />
       </div>
+
       <h2 className="content__title">Все роллы</h2>
       {status === 'error' ? (
         <div className="content__error-info">
